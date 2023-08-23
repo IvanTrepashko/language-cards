@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="12.1.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.32.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LanguageCards.Application\LanguageCards.Application.csproj" />
+    <ProjectReference Include="..\LanguageCards.Domain\LanguageCards.Domain.csproj" />
+    <ProjectReference Include="..\LanguageCards.Infrastructure\LanguageCards.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
