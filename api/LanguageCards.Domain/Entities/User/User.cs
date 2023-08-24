@@ -13,15 +13,12 @@ namespace LanguageCards.Domain.Entities.User
 
         public Email Email { get; set; }
 
-        public string Username { get; set; }
-
-        public User(Guid id, string firstName, string lastName, Email email, string username)
+        public User(Guid id, string firstName, string lastName, Email email)
         {
             Id = id;
             FirstName = firstName;
             LastName = lastName;
             Email = email;
-            Username = username;
         }
     }
 }

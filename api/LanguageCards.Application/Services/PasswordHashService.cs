@@ -1,9 +1,9 @@
-﻿using LanguageCards.API.Options;
-using LanguageCards.API.Services.Abstractions;
+﻿using LanguageCards.Application.Options;
+using LanguageCards.Application.Services.Abstractions;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace LanguageCards.API.Services
+namespace LanguageCards.Application.Services
 {
     public class PasswordHashService : IPasswordHashService
     {

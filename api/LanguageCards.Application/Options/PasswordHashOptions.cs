@@ -1,4 +1,4 @@
-﻿namespace LanguageCards.API.Options
+﻿namespace LanguageCards.Application.Options
 {
     public class PasswordHashOptions
     {

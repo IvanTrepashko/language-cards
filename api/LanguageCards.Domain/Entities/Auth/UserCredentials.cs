@@ -14,13 +14,13 @@ namespace LanguageCards.Domain.Entities.Auth
 
         public string Role { get; init; }
 
-        public UserCredentials(Guid id, string email, string password, byte[] salt, string role)
+        public UserCredentials(Guid id, string email, string password, byte[] salt)
         {
             Id = id;
             Email = email;
             Password = password;
             Salt = salt;
-            Role = role;
+            Role = "User";
         }
     }
 }

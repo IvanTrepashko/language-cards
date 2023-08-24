@@ -1,4 +1,4 @@
-﻿namespace LanguageCards.API.Services.Abstractions
+﻿namespace LanguageCards.Application.Services.Abstractions
 {
     public interface IPasswordHashService
     {

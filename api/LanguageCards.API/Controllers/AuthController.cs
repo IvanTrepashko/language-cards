@@ -1,6 +1,6 @@
 ﻿using LanguageCards.API.ApiModels.Auth;
-using LanguageCards.API.Services.Abstractions;
-using LanguageCards.Application.Commands.User;
+using LanguageCards.Application.Commands.Authorization;
+using LanguageCards.Application.Services.Abstractions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,9 +13,10 @@ namespace LanguageCards.API.Controllers
         private readonly IAuthenticationManager _authenticationManager;
         private readonly ISender _sender;
 
-        public AuthController(IAuthenticationManager authenticationManager)
+        public AuthController(IAuthenticationManager authenticationManager, ISender sender)
         {
             _authenticationManager = authenticationManager;
+            _sender = sender;
         }
 
         [HttpPost("login")]
@@ -38,6 +39,14 @@ namespace LanguageCards.API.Controllers
             await _sender.Send(command, HttpContext.RequestAborted);
 
             return Ok();
+        }
+
+        [HttpPost("refresh")]
+        public async Task<IActionResult> Refresh([FromBody] RefreshTokenRequest refreshToken)
+        {
+            var token = await _authenticationManager.GenerateNewTokenAsync(refreshToken.RefreshToken, HttpContext.RequestAborted);
+
+            return Ok(token);
         }
     }
 }
