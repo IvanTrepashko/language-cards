@@ -16,7 +16,7 @@
         {
             get
             {
-                var auth = (Username != null && Password != null) ?
+                var auth = (!string.IsNullOrEmpty(Username) && !string.IsNullOrEmpty(Password)) ?
                     $"{Username}:{Password}@" :
                     string.Empty;
 

@@ -7,7 +7,7 @@ using MongoDb.Repository;
 
 namespace LanguageCards.Application.Commands.Authorization
 {
-    internal class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand>
+    internal class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, UserCredentials>
     {
         private readonly IRepository<User> _userRepository;
         private readonly IRepository<UserCredentials> _userCredentialsRepository;
@@ -20,14 +20,14 @@ namespace LanguageCards.Application.Commands.Authorization
             _passwordHashService = passwordHashService;
         }
 
-        public async Task Handle(RegisterUserCommand request, CancellationToken cancellationToken)
+        public async Task<UserCredentials> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
         {
             var existingUser = await _userRepository.FindOneAsync(x => string.Equals(x.Email.Value, request.Email, StringComparison.OrdinalIgnoreCase), cancellationToken);
 
             if (existingUser is not null)
             {
                 // throw exception
-                return;
+                return null;
             }
 
             var userEmail = new Email(request.Email);
@@ -36,13 +36,22 @@ namespace LanguageCards.Application.Commands.Authorization
 
             await _userRepository.InsertOneAsync(newUser, cancellationToken);
 
-            var password = _passwordHashService.GetHash(request.Password, out var salt);
-
-            var newUserCredentials = new UserCredentials(newUser.Id, userEmail.Value, password, salt);
+            UserCredentials newUserCredentials;
+            if (request.Password is not null)
+            {
+                var password = _passwordHashService.GetHash(request.Password, out var salt);
+                newUserCredentials = new UserCredentials(newUser.Id, userEmail.Value, password, salt);
+            }
+            else
+            {
+                newUserCredentials = new UserCredentials(newUser.Id, newUser.Email.Value, null, null);
+            }
 
             await _userCredentialsRepository.InsertOneAsync(newUserCredentials, cancellationToken);
+
+            return newUserCredentials;
         }
     }
 
-    public record RegisterUserCommand(string Email, string Password, string FirstName, string LastName) : IRequest;
+    public record RegisterUserCommand(string Email, string Password, string FirstName, string LastName) : IRequest<UserCredentials>;
 }

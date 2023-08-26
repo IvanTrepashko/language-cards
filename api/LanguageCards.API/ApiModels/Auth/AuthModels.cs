@@ -5,4 +5,6 @@
     public record AuthenticationResponse(string AccessToken, string RefreshToken);
 
     public record RefreshTokenRequest(string RefreshToken);
+
+    public record GoogleLoginRequest(string AccessToken);
 }

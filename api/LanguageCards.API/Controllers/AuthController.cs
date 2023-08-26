@@ -1,4 +1,5 @@
 ﻿using LanguageCards.API.ApiModels.Auth;
+using LanguageCards.API.Services.Abstractions;
 using LanguageCards.Application.Commands.Authorization;
 using LanguageCards.Application.Services.Abstractions;
 using MediatR;
@@ -11,11 +12,16 @@ namespace LanguageCards.API.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthenticationManager _authenticationManager;
+        private readonly IGoogleAuthenticationService _googleAuthenticationService;
         private readonly ISender _sender;
 
-        public AuthController(IAuthenticationManager authenticationManager, ISender sender)
+        public AuthController(
+            IAuthenticationManager authenticationManager,
+            IGoogleAuthenticationService googleAuthenticationService,
+            ISender sender)
         {
             _authenticationManager = authenticationManager;
+            _googleAuthenticationService = googleAuthenticationService;
             _sender = sender;
         }
 
@@ -45,6 +51,14 @@ namespace LanguageCards.API.Controllers
         public async Task<IActionResult> Refresh([FromBody] RefreshTokenRequest refreshToken)
         {
             var token = await _authenticationManager.GenerateNewTokenAsync(refreshToken.RefreshToken, HttpContext.RequestAborted);
+
+            return Ok(token);
+        }
+
+        [HttpPost("google")]
+        public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginRequest googleLoginRequest)
+        {
+            var token = await _googleAuthenticationService.HandleGoogleAuthenticationAsync(googleLoginRequest.AccessToken, HttpContext.RequestAborted);
 
             return Ok(token);
         }

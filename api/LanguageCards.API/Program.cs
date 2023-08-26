@@ -20,10 +20,10 @@ namespace LanguageCards.API
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            builder.Services.AddAuthentication(x =>
+            builder.Services.AddAuthentication(options =>
             {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(options =>
             {
                 var Key = Encoding.UTF8.GetBytes(builder.Configuration["JwtOptions:AccessTokenSecurityKey"]);
@@ -37,6 +37,14 @@ namespace LanguageCards.API
                     ValidAudience = builder.Configuration["JwtOptions:Audience"],
                     IssuerSigningKey = new SymmetricSecurityKey(Key)
                 };
+            });
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(policy =>
+                {
+                    policy.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod();
+                });
             });
 
             // Infrastructure dependencies
@@ -59,6 +67,8 @@ namespace LanguageCards.API
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
+
+            app.UseCors();
 
             app.UseSwagger();
             app.UseSwaggerUI();
